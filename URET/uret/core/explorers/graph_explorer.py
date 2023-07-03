@@ -173,7 +173,7 @@ class GraphExplorer(ABC):
             # Nawawy's end
             for sample_next, transformation_record, _ in self.search([sample, explore_params[1], explore_params[2]], score_input):
                 # Nawawy's start
-                sample_next = sample_next.reshape(1, backcast, nv)
+                sample_next = sample_next.reshape(1, explore_params[1], explore_params[2])
                 new_prediction, _, _, _, _ = self.model_predict(self.feature_extractor(sample_next))
                 if len(np.shape(new_prediction)) == 2:
                     new_prediction = new_prediction
