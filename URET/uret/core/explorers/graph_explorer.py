@@ -135,7 +135,6 @@ class GraphExplorer(ABC):
         param target_features: If using feature loss, then this value contains the target features.
         param return_record: A boolean that if True will return the transformation record as well.
         """
-
         if self.scoring_alg == "feature_loss":
             if target_features is None:
                 raise ValueError("The target features must be provided in order to use feature_loss")
@@ -172,10 +171,15 @@ class GraphExplorer(ABC):
             # Nawawy's start
             sample = sample.reshape(explore_params[1]*explore_params[2])
             # Nawawy's end
-            for sample_next, transformation_record, _ in self.search(sample, score_input):
-
+            for sample_next, transformation_record, _ in self.search([sample, explore_params[1], explore_params[2]], score_input):
+                # Nawawy's start
+                sample_next = sample_next.reshape(1, backcast, nv)
+                new_prediction, _, _, _, _ = self.model_predict(self.feature_extractor(sample_next))
+                if len(np.shape(new_prediction)) == 2:
+                    new_prediction = new_prediction
                 # Score the current sample
-                score = self.scoring_function(sample_next, score_input)
+                score = self.scoring_function(new_prediction, score_input)
+                # Nawawy's end
 
                 # Early exit conditions
                 # If using feature loss, then we can early exit once the target features are attained

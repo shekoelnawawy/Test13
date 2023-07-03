@@ -312,7 +312,7 @@ def fit(net, optimiser, traingen,valgen,mydir,device, basedir):
 	
 	trains=[]
 	vals=[]
-	patience=1
+	patience=0
 	prevvalloss=np.inf
 	unimproved=0
 		
