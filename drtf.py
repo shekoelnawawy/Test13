@@ -292,6 +292,8 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 	print(len(allPatients_benign))
 	print('----------------------------------------------------------')
 	explore_params = [allPatients_benign, backcast_length, nv]
+	joblib.dump(allPatients_benign, maindir+'/allPatients_benign.pkl')
+	exit()
 	allPatients_adversarial = np.array(explorer.explore(explore_params))
 
 	allPatients_benign = allPatients_benign.reshape(-1, backcast_length, nv)  # 15701, 12, 7
