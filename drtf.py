@@ -30,7 +30,7 @@ os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 rnn=True
 
 #general hyperparameters
-BATCHSIZE = 512
+BATCHSIZE = 64
 NUMBLOCKS = 7
 HIDDEN  = 300
 SEED=0
