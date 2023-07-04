@@ -277,8 +277,6 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 	index = 0
 	while (True):
 		x, target, done = next(testgen)
-		print(x.shape)
-		exit()
 		if index == 0:
 			allPatients_benign = x.reshape(-1, backcast_length*nv)
 		else:
