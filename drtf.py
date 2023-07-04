@@ -300,7 +300,7 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 	print(allPatients.shape)
 	print(len(allPatients))
 	print('----------------------------------------------------------')
-
+	joblib.dump(allPatients, maindir+'/allPatients.pkl')
 	allPatients = allPatients.reshape((1, len(allPatients)*backcast_length, nv))
 	print('allPatients_reshape')
 	print(allPatients)
