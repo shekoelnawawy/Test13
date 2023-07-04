@@ -280,45 +280,49 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 		print(x.shape)
 		exit()
 		if index == 0:
-			allPatients = x.reshape(-1, backcast_length*nv)
+			allPatients_benign = x.reshape(-1, backcast_length*nv)
 		else:
-			allPatients = np.append(allPatients, x.reshape(-1, backcast_length*nv))
+			allPatients_benign = np.append(allPatients_benign, x.reshape(-1, backcast_length*nv))
 		index = index + 1
 		if done:
 			break
 
-	allPatients = allPatients.reshape(-1, backcast_length*nv)
-	print('allPatients_original')
-	print(allPatients)
-	print(type(allPatients))
-	print(allPatients.shape)
-	print(len(allPatients))
+	allPatients_benign = allPatients_benign.reshape(-1, backcast_length*nv) #15701, 84
+	print('allPatients_benign')
+	print(type(allPatients_benign))
+	print(allPatients_benign.shape)
+	print(len(allPatients_benign))
 	print('----------------------------------------------------------')
-	explore_params = [allPatients, backcast_length, nv]
-	allPatients = np.array(explorer.explore(explore_params))
+	explore_params = [allPatients_benign, backcast_length, nv]
+	allPatients_adversarial = np.array(explorer.explore(explore_params))
+
+	allPatients_benign = allPatients_benign.reshape(-1, backcast_length, nv)  # 15701, 12, 7
+	for i in range(len(allPatients_adversarial)):
+		if allPatients_adversarial[i] is None:
+			allPatients_adversarial[i] = allPatients_benign[i].copy()
+
+
 	print('allPatients_adversarial')
-	print(allPatients)
-	print(type(allPatients))
-	print(allPatients.shape)
-	print(len(allPatients))
+	print(allPatients_adversarial)
+	print(type(allPatients_adversarial))
+	print(allPatients_adversarial.shape)
+	print(len(allPatients_adversarial))
 	print('----------------------------------------------------------')
-	joblib.dump(allPatients, maindir+'/allPatients.pkl')
-	allPatients = allPatients.reshape((1, len(allPatients)*backcast_length, nv))
+	allPatients_adversarial = allPatients_adversarial.reshape((1, len(allPatients_adversarial)*backcast_length, nv))
 	print('allPatients_reshape')
-	print(allPatients)
-	print(type(allPatients))
-	print(allPatients.shape)
-	print(len(allPatients))
+	print(type(allPatients_adversarial))
+	print(allPatients_adversarial.shape)
+	print(len(allPatients_adversarial))
 	print('----------------------------------------------------------')
 
 
-	testgen = ordered_data(batch_size, backcast_length, forecast_length, allPatients)
+	testgen = ordered_data(batch_size, backcast_length, forecast_length, allPatients_adversarial)
 
 
 	if backcast_length == 12:
 		global ensembleTestgen
 		ensembleTestgen = testgen
-		joblib.dump(allPatients, maindir+'/allPatients.pkl')
+		joblib.dump(allPatients_adversarial, maindir+'/allPatients_adversarial.pkl')
 	# Nawawy's end
 
 	eval(net, optimiser, testgen,mydir,  device)
