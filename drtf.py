@@ -286,12 +286,28 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 			break
 
 	allPatients = allPatients.reshape(-1, backcast_length*nv)
-
+	print('allPatients_original')
+	print(allPatients)
+	print(type(allPatients))
+	print(allPatients.shape)
+	print(len(allPatients))
+	print('----------------------------------------------------------')
 	explore_params = [allPatients, backcast_length, nv]
 	allPatients = np.array(explorer.explore(explore_params))
+	print('allPatients_adversarial')
+	print(allPatients)
+	print(type(allPatients))
+	print(allPatients.shape)
+	print(len(allPatients))
+	print('----------------------------------------------------------')
 
 	allPatients = allPatients.reshape((1, len(allPatients)*backcast_length, nv))
-
+	print('allPatients_reshape')
+	print(allPatients)
+	print(type(allPatients))
+	print(allPatients.shape)
+	print(len(allPatients))
+	print('----------------------------------------------------------')
 
 
 	testgen = ordered_data(batch_size, backcast_length, forecast_length, allPatients)
