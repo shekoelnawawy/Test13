@@ -151,14 +151,15 @@ def main():
 		#loop through every batch in training data.
 		batch=0
 		while(True):
-			x,target,done=next(ensembleTestgen)
+			x,target,done=next(testgen)
 			totalpoints = totalpoints+x.shape[0]
 			#loop through each directory and load predicions
 			preds=[]
 			for f in os.listdir(maindir):
-				temp=joblib.load(maindir+'/'+f+'/preds.pkl')
-				preds.append(temp[batch])
-				del temp
+				if f.startswith('model'):
+					temp=joblib.load(maindir+'/'+f+'/preds.pkl')
+					preds.append(temp[batch])
+					del temp
 			#take median
 			preds=np.array(preds)
 			# Nawawy's start
@@ -177,6 +178,8 @@ def main():
 			# Nawawy's start
 			if (len(target) < BATCHSIZE):
 				target = np.pad(target, ((0, BATCHSIZE - len(target)), (0, 0)), mode='constant', constant_values=0)
+			joblib.dump(target, maindir+'/target.pkl')
+			joblib.dump(median, maindir + '/median.pkl')
 			# Nawawy's end
 
 			#get losses
@@ -203,7 +206,7 @@ def main():
 			batch=batch+1
 			if done:
 				break
-		
+		joblib.dump(test, maindir+'/test.pkl')
 		#write final losses
 		#MSE for whole window
 		t=open(maindir+"/"+str(np.sum(np.asarray(losses))/totalpoints)+".FINALMSEout","w")
@@ -297,6 +300,7 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 	if backcast_length == 12:
 		global ensembleTestgen
 		ensembleTestgen = testgen
+		joblib.dump(allPatients, maindir+'/allPatients.pkl')
 	# Nawawy's end
 
 	eval(net, optimiser, testgen,mydir,  device)
