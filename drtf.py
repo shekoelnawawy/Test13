@@ -285,36 +285,22 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 		if done:
 			break
 
-	allPatients_benign = allPatients_benign.reshape(-1, backcast_length*nv) #15701, 84
-	print('allPatients_benign')
-	print(type(allPatients_benign))
-	print(allPatients_benign.shape)
-	print(len(allPatients_benign))
-	print('----------------------------------------------------------')
+	allPatients_benign = allPatients_benign.reshape(-1, backcast_length*nv)
 	explore_params = [allPatients_benign, backcast_length, nv]
-	joblib.dump(allPatients_benign, maindir+'/allPatients_benign.pkl')
-	exit()
 	allPatients_adversarial = np.array(explorer.explore(explore_params))
 
 	allPatients_benign = allPatients_benign.reshape(-1, backcast_length, nv)  # 15701, 12, 7
 	for i in range(len(allPatients_adversarial)):
 		if allPatients_adversarial[i] is None:
-			allPatients_adversarial[i] = allPatients_benign[i].copy()
+			allPatients_adversarial[i] = allPatients_benign[i].reshape(1, backcast_length, nv).copy()
+		if i == 0:
+			temp = allPatients_adversarial[i].reshape(1, backcast_length, nv)
+		else:
+			temp = np.append(temp, allPatients_adversarial[i].reshape(1, backcast_length, nv))
 
+	# allPatients_adversarial = temp.reshape((-1, backcast_length, nv))
 
-	print('allPatients_adversarial')
-	print(allPatients_adversarial)
-	print(type(allPatients_adversarial))
-	print(allPatients_adversarial.shape)
-	print(len(allPatients_adversarial))
-	print('----------------------------------------------------------')
-	allPatients_adversarial = allPatients_adversarial.reshape((1, len(allPatients_adversarial)*backcast_length, nv))
-	print('allPatients_reshape')
-	print(type(allPatients_adversarial))
-	print(allPatients_adversarial.shape)
-	print(len(allPatients_adversarial))
-	print('----------------------------------------------------------')
-
+	allPatients_adversarial = temp.reshape((1, len(allPatients_adversarial)*backcast_length, nv))
 
 	testgen = ordered_data(batch_size, backcast_length, forecast_length, allPatients_adversarial)
 
