@@ -606,16 +606,17 @@ class Block(nn.Module):
 			if origbs<self.bs:
 				if origbs == 0:
 					x = torch.zeros([1, self.backlen, nv]).to(self.device)
-					origbs = 1
+					origbs=x.size()[0]
 				if AVD:
-					print('x')
-					print(x)
-					print(x.shape)
-					print(type(x))
-					print('-----------------------------------------------------')
 					x=F.pad(input=x, pad=( 0,0,0,0,0,self.bs-origbs), mode='constant', value=0)
 				else:
 					x=F.pad(input=x, pad=( 0,0,0,self.bs-origbs), mode='constant', value=0)
+
+			print('x')
+			print(x)
+			print(x.shape)
+			print(type(x))
+			print('-----------------------------------------------------')
 			self.h_0=self.h_0.data
 			self.c_0=self.c_0.data
 			if not AVD:
