@@ -593,9 +593,9 @@ class Block(nn.Module):
 		if rnn:
 			origbs=x.size()[0]
 			if origbs<self.bs:
-				if origbs == 0:
-					x = torch.zeros([1, self.backlen, nv]).to(self.device)
-					origbs=x.size()[0]
+				# if origbs == 0:
+				# 	x = torch.zeros([1, self.backlen, nv]).to(self.device)
+				# 	origbs=x.size()[0]
 				if AVD:
 					x=F.pad(input=x, pad=( 0,0,0,0,0,self.bs-origbs), mode='constant', value=0)
 				else:
@@ -632,14 +632,14 @@ class Stack(nn.Module):
 		for block_id in range(len(self.blocks)):
 			b, f = self.blocks[block_id](backcast)
 			#backcast = torch.cat( [(backcast[:,:,0] - b).view([-1,self.backcast_length,1]),backcast[:,:,1:] ],dim=2)
-			if len(backcast) == 0:
-				backcast = torch.zeros([BATCHSIZE, self.backcast_length, nv]).to(self.device)
-			if len(b) < BATCHSIZE:
-				b = F.pad(input=b, pad=(0, 0, 0, BATCHSIZE - len(b)), mode='constant', value=0)
-			if len(backsum) == 0:
-				backsum = torch.zeros([BATCHSIZE, self.backcast_length]).to(self.device)
-			if len(x) < BATCHSIZE:
-				x = F.pad(input=x, pad=(0, 0, 0, BATCHSIZE - len(x)), mode='constant', value=0)
+			# if len(backcast) == 0:
+			# 	backcast = torch.zeros([BATCHSIZE, self.backcast_length, nv]).to(self.device)
+			# if len(b) < BATCHSIZE:
+			# 	b = F.pad(input=b, pad=(0, 0, 0, BATCHSIZE - len(b)), mode='constant', value=0)
+			# if len(backsum) == 0:
+			# 	backsum = torch.zeros([BATCHSIZE, self.backcast_length]).to(self.device)
+			# if len(x) < BATCHSIZE:
+			# 	x = F.pad(input=x, pad=(0, 0, 0, BATCHSIZE - len(x)), mode='constant', value=0)
 			if AVD:
 				backtargs.append(backcast.clone()[:,:,0])
 				backcast2=backcast.clone()
@@ -648,14 +648,14 @@ class Stack(nn.Module):
 			else:
 				backtargs.append(backcast.clone())
 				backcast=backcast-b
-			print('x')
-			print(type(x))
-			print(x.shape)
-			print('---------------------------------------------------')
-			print('f')
-			print(type(f))
-			print(f.shape)
-			print('---------------------------------------------------')
+			# print('x')
+			# print(type(x))
+			# print(x.shape)
+			# print('---------------------------------------------------')
+			# print('f')
+			# print(type(f))
+			# print(f.shape)
+			# print('---------------------------------------------------')
 
 			backsum=backsum+b
 			x= x + f
