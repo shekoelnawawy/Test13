@@ -348,6 +348,8 @@ def fit(net, optimiser, traingen,valgen,mydir,device, basedir):
 			net.train()
 			x,target,done=next(traingen)
 			total=total+x.shape[0]
+			print('done')
+			print(done)
 			print('x')
 			print(x)
 			print(x.shape)
