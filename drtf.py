@@ -598,6 +598,11 @@ class Block(nn.Module):
 			print('self.bs')
 			print(self.bs)
 			print('-----------------------------------------------------')
+			print('x')
+			print(x)
+			print(x.shape)
+			print(type(x))
+			print('-----------------------------------------------------')
 			if origbs<self.bs:
 				if AVD:
 					print('x')
