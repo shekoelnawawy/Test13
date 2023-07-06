@@ -592,19 +592,19 @@ class Block(nn.Module):
 			return out,forecast
 		if rnn:
 			origbs=x.size()[0]
-			print('origbs')
-			print(origbs)
-			print('-----------------------------------------------------')
-			print('self.bs')
-			print(self.bs)
-			print('-----------------------------------------------------')
+			# print('origbs')
+			# print(origbs)
+			# print('-----------------------------------------------------')
+			# print('self.bs')
+			# print(self.bs)
+			# print('-----------------------------------------------------')
 			if origbs<self.bs:
 				if AVD:
-					print('x')
-					print(x)
-					print(x.shape)
-					print(type(x))
-					print('-----------------------------------------------------')
+					# print('x')
+					# print(x)
+					# print(x.shape)
+					# print(type(x))
+					# print('-----------------------------------------------------')
 					x=F.pad(input=x, pad=( 0,0,0,0,0,self.bs-origbs), mode='constant', value=0)
 				else:
 					x=F.pad(input=x, pad=( 0,0,0,self.bs-origbs), mode='constant', value=0)
