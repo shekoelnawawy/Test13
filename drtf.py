@@ -639,6 +639,8 @@ class Stack(nn.Module):
 			# print('---------------------------------------------------')
 			if len(backcast) == 0:
 				backcast = torch.zeros([BATCHSIZE, self.backcast_length, nv]).to(self.device)
+			if len(b) < BATCHSIZE:
+				b = F.pad(input=b, pad=(0, 0, 0, 0, 0, BATCHSIZE - len(b)), mode='constant', value=0)
 			if AVD:
 				backtargs.append(backcast.clone()[:,:,0])
 				backcast2=backcast.clone()
@@ -647,7 +649,7 @@ class Stack(nn.Module):
 			else:
 				backtargs.append(backcast.clone())
 				backcast=backcast-b
-			b=F.pad(input=b, pad=( 0,0,0,0,0,BATCHSIZE-len(b)), mode='constant', value=0)
+
 			backsum=backsum+b
 			x= x + f
 			#for loss calculation
