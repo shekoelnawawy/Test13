@@ -632,11 +632,11 @@ class Stack(nn.Module):
 		for block_id in range(len(self.blocks)):
 			b, f = self.blocks[block_id](backcast)
 			#backcast = torch.cat( [(backcast[:,:,0] - b).view([-1,self.backcast_length,1]),backcast[:,:,1:] ],dim=2)
-			# print('b')
-			# print(b)
-			# print(type(b))
-			# print(b.shape)
-			# print('---------------------------------------------------')
+			print('b')
+			print(b)
+			print(type(b))
+			print(b.shape)
+			print('---------------------------------------------------')
 			if len(backcast) == 0:
 				backcast = torch.zeros([BATCHSIZE, self.backcast_length, nv]).to(self.device)
 			if len(b) < BATCHSIZE:
