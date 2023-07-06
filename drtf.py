@@ -348,6 +348,11 @@ def fit(net, optimiser, traingen,valgen,mydir,device, basedir):
 			net.train()
 			x,target,done=next(traingen)
 			total=total+x.shape[0]
+			print('x')
+			print(x)
+			print(x.shape)
+			print(type(x))
+			print('-------------------------------------------------')
 			forecast,fores,backs,backsum,backtargs= net(   torch.tensor(x, dtype=torch.float).to(device)	 )
 			if FIL:
 				loss = 1/lossbonsumf*losss2(fores, torch.tensor(target, dtype=torch.float).to(device))
