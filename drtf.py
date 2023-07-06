@@ -592,17 +592,6 @@ class Block(nn.Module):
 			return out,forecast
 		if rnn:
 			origbs=x.size()[0]
-			# print('origbs')
-			# print(origbs)
-			# print('-----------------------------------------------------')
-			# print('self.bs')
-			# print(self.bs)
-			# print('-----------------------------------------------------')
-			# print('x')
-			# print(x)
-			# print(x.shape)
-			# print(type(x))
-			# print('-----------------------------------------------------')
 			if origbs<self.bs:
 				if origbs == 0:
 					x = torch.zeros([1, self.backlen, nv]).to(self.device)
@@ -611,12 +600,6 @@ class Block(nn.Module):
 					x=F.pad(input=x, pad=( 0,0,0,0,0,self.bs-origbs), mode='constant', value=0)
 				else:
 					x=F.pad(input=x, pad=( 0,0,0,self.bs-origbs), mode='constant', value=0)
-
-			print('x')
-			print(x)
-			print(x.shape)
-			print(type(x))
-			print('-----------------------------------------------------')
 			self.h_0=self.h_0.data
 			self.c_0=self.c_0.data
 			if not AVD:
@@ -650,6 +633,11 @@ class Stack(nn.Module):
 			b, f = self.blocks[block_id](backcast)
 			#backcast = torch.cat( [(backcast[:,:,0] - b).view([-1,self.backcast_length,1]),backcast[:,:,1:] ],dim=2)
 			if AVD:
+				print('backcast.clone()')
+				print(backcast.clone())
+				print(type(backcast.clone()))
+				print(backcast.clone().shape)
+				print('---------------------------------------------------')
 				backtargs.append(backcast.clone()[:,:,0])
 				backcast2=backcast.clone()
 				backcast2[:,:,0]=backcast2[:,:,0]-b
