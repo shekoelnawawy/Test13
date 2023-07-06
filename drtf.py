@@ -632,6 +632,8 @@ class Stack(nn.Module):
 		for block_id in range(len(self.blocks)):
 			b, f = self.blocks[block_id](backcast)
 			#backcast = torch.cat( [(backcast[:,:,0] - b).view([-1,self.backcast_length,1]),backcast[:,:,1:] ],dim=2)
+			if len(backcast) == 0:
+				backcast = torch.zeros([BATCHSIZE, self.backlen, nv]).to(self.device)
 			if AVD:
 				print('backcast.clone()')
 				print(backcast.clone())
