@@ -413,13 +413,14 @@ def eval(net, optimiser, testgen,mydir,  device):
 		preds=[]
 		while(True):
 			x,target,done=next(testgen)
+			if done:
+				break
 			totalpoints = totalpoints+x.shape[0]
 			forecast,dummy1,backs,dummy3,dummy4 = net(torch.tensor(x, dtype=torch.float).to(device))
 			preds.append(forecast.cpu().numpy())
 			losses.append(mse_one_eval(forecast, torch.tensor(target, dtype=torch.float).to(device)).item()*x.shape[0])
 			rmselosses.append(mse_lastpointonly(forecast, torch.tensor(target, dtype=torch.float).to(device)).item()*x.shape[0])
-			if done:
-				break
+
 		#write final loss
 		t=open(mydir+"/"+str(np.sum(np.asarray(losses))/totalpoints)+".testMSEout","w")
 		t=open(mydir+"/"+str(np.sqrt(np.sum(np.asarray(rmselosses))/totalpoints))+".testRmseout","w")
