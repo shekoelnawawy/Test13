@@ -592,18 +592,21 @@ class Block(nn.Module):
 			return out,forecast
 		if rnn:
 			origbs=x.size()[0]
-			print('origbs')
-			print(origbs)
-			print('-----------------------------------------------------')
-			print('self.bs')
-			print(self.bs)
-			print('-----------------------------------------------------')
-			print('x')
-			print(x)
-			print(x.shape)
-			print(type(x))
-			print('-----------------------------------------------------')
+			# print('origbs')
+			# print(origbs)
+			# print('-----------------------------------------------------')
+			# print('self.bs')
+			# print(self.bs)
+			# print('-----------------------------------------------------')
+			# print('x')
+			# print(x)
+			# print(x.shape)
+			# print(type(x))
+			# print('-----------------------------------------------------')
 			if origbs<self.bs:
+				if origbs == 0:
+					x = torch.zeros([1, self.backlen, nv]).to(self.device)
+					origbs = 1
 				if AVD:
 					print('x')
 					print(x)
