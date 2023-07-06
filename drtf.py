@@ -632,13 +632,13 @@ class Stack(nn.Module):
 		for block_id in range(len(self.blocks)):
 			b, f = self.blocks[block_id](backcast)
 			#backcast = torch.cat( [(backcast[:,:,0] - b).view([-1,self.backcast_length,1]),backcast[:,:,1:] ],dim=2)
-			print('b')
-			print(b)
-			print(type(b))
-			print(b.shape)
-			print('---------------------------------------------------')
-			# if len(backcast) == 0:
-			# 	backcast = torch.zeros([BATCHSIZE, self.backcast_length, nv]).to(self.device)
+			# print('b')
+			# print(b)
+			# print(type(b))
+			# print(b.shape)
+			# print('---------------------------------------------------')
+			if len(backcast) == 0:
+				backcast = torch.zeros([BATCHSIZE, self.backcast_length, nv]).to(self.device)
 			if AVD:
 				backtargs.append(backcast.clone()[:,:,0])
 				backcast2=backcast.clone()
@@ -647,6 +647,7 @@ class Stack(nn.Module):
 			else:
 				backtargs.append(backcast.clone())
 				backcast=backcast-b
+			b=F.pad(input=b, pad=( 0,0,0,0,0,BATCHSIZE-len(b)), mode='constant', value=0)
 			backsum=backsum+b
 			x= x + f
 			#for loss calculation
