@@ -91,7 +91,8 @@ backcastopts=[2,3,4,5,6,7]
 def main():
 	maindir = os.getcwd()+'/'+outstr
 
-	os.makedirs(maindir)
+	if not os.path.exists(maindir):
+		os.makedirs(maindir)
 	
 	basedir=maindir
 	
