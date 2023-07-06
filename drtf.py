@@ -374,12 +374,13 @@ def fit(net, optimiser, traingen,valgen,mydir,device, basedir):
 		while(True):
 			with torch.no_grad():
 				x,target,done=next(valgen)
+				if done:
+					break
 				total=total+x.shape[0]
 				forecast,fores,backs,backsum,backtargs= net(   torch.tensor(x, dtype=torch.float).to(device)	 )
 				loss = losss(forecast, torch.tensor(target, dtype=torch.float).to(device))
 				tempval.append(loss.item()*x.shape[0])
-				if done:
-					break
+
 		vals.append(np.sum(tempval)/total)
 		
 		print('val loss: '+str(vals[-1]))				
