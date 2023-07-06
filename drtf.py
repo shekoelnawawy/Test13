@@ -347,14 +347,9 @@ def fit(net, optimiser, traingen,valgen,mydir,device, basedir):
 			optimiser.zero_grad()
 			net.train()
 			x,target,done=next(traingen)
+			if done:
+				break
 			total=total+x.shape[0]
-			print('done')
-			print(done)
-			print('x')
-			print(x)
-			print(x.shape)
-			print(type(x))
-			print('-------------------------------------------------')
 			forecast,fores,backs,backsum,backtargs= net(   torch.tensor(x, dtype=torch.float).to(device)	 )
 			if FIL:
 				loss = 1/lossbonsumf*losss2(fores, torch.tensor(target, dtype=torch.float).to(device))
@@ -369,8 +364,7 @@ def fit(net, optimiser, traingen,valgen,mydir,device, basedir):
 			loss.backward()
 			optimiser.step()
 			temptrain.append(loss.item()*x.shape[0])
-			if done:
-				break
+
 		trains.append(np.sum(temptrain)/total)
 		print('grad_step = '+str(grad_step)+' loss = '+str(trains[-1]))
 		
