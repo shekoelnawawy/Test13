@@ -12,7 +12,7 @@ import pandas as pd
 
 # Nawawy's start
 from URET.uret.utils.config import process_config_file
-ensembleTestgen = 0
+# ensembleTestgen = 0
 cf = "URET/brute.yml"
 
 def feature_extractor(x):
@@ -30,7 +30,7 @@ os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 rnn=True
 
 #general hyperparameters
-BATCHSIZE = 16
+BATCHSIZE = 64
 NUMBLOCKS = 7
 HIDDEN  = 300
 SEED=0
@@ -105,7 +105,7 @@ def main():
 	
 	#loop through subjects, starting with all subjects
 	#(will do all subjects only if PERSUBJECT is false)
-	for subb in range(1,loopsthrough):
+	for subb in range(loopsthrough):
 		if PERSUBJECT:
 			if subb==0:
 				sub=99
@@ -309,8 +309,8 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 
 
 	if backcast_length == 12:
-		global ensembleTestgen
-		ensembleTestgen = testgen
+		# global ensembleTestgen
+		# ensembleTestgen = testgen
 		joblib.dump(allPatients_adversarial, maindir+'/allPatients_adversarial.pkl')
 	# Nawawy's end
 
