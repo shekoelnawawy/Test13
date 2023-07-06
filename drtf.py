@@ -30,7 +30,7 @@ os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 rnn=True
 
 #general hyperparameters
-BATCHSIZE = 16
+BATCHSIZE = 64
 NUMBLOCKS = 7
 HIDDEN  = 300
 SEED=0
@@ -153,6 +153,8 @@ def main():
 		batch=0
 		while(True):
 			x,target,done=next(testgen)
+			if done:
+				break
 			totalpoints = totalpoints+x.shape[0]
 			#loop through each directory and load predicions
 			preds=[]
@@ -163,35 +165,35 @@ def main():
 					del temp
 			#take median
 			preds=np.array(preds)
-			# Nawawy's start
-			for i in range(len(preds)):
-				if (len(preds[i]) < BATCHSIZE):
-					preds[i] = np.pad(preds[i], ((0, BATCHSIZE - len(preds[i])), (0, 0)), mode='constant', constant_values=0)
-				if i == 0:
-					temp_preds = preds[i]
-				else:
-					temp_preds = np.append(temp_preds, preds[i])
-
-			preds = temp_preds.reshape((len(preds), BATCHSIZE, horizon))
-			# Nawawy's end
+			# # Nawawy's start
+			# for i in range(len(preds)):
+			# 	if (len(preds[i]) < BATCHSIZE):
+			# 		preds[i] = np.pad(preds[i], ((0, BATCHSIZE - len(preds[i])), (0, 0)), mode='constant', constant_values=0)
+			# 	if i == 0:
+			# 		temp_preds = preds[i]
+			# 	else:
+			# 		temp_preds = np.append(temp_preds, preds[i])
+			#
+			# preds = temp_preds.reshape((len(preds), BATCHSIZE, horizon))
+			# # Nawawy's end
 			median=np.median(preds,axis=0)
 
-			# Nawawy's start
-			if (len(target) < BATCHSIZE):
-				target = np.pad(target, ((0, BATCHSIZE - len(target)), (0, 0)), mode='constant', constant_values=0)
+			# # Nawawy's start
+			# if (len(target) < BATCHSIZE):
+			# 	target = np.pad(target, ((0, BATCHSIZE - len(target)), (0, 0)), mode='constant', constant_values=0)
 			joblib.dump(target, maindir+'/target.pkl')
 			joblib.dump(median, maindir + '/median.pkl')
-			# Nawawy's end
+			# # Nawawy's end
 
 			#get losses
 			losses.append(mse_cpu(target, median)*x.shape[0])
 			rmselosses.append(mse_lastpointonly_cpu(target, median)*x.shape[0])
 			maes.append(mae_lastpointonly_cpu(target, median)*x.shape[0])
 
-			# Nawawy's start
-			if (len(x) < BATCHSIZE):
-				x = np.pad(x, ((0, BATCHSIZE - len(x)), (0, 0), (0, 0)), mode='constant', constant_values=0)
-			# Nawawy's end
+			# # Nawawy's start
+			# if (len(x) < BATCHSIZE):
+			# 	x = np.pad(x, ((0, BATCHSIZE - len(x)), (0, 0), (0, 0)), mode='constant', constant_values=0)
+			# # Nawawy's end
 
 			#event losses- will get MSE of last point
 			ee,te=event(target,median,x[:,:,0])
@@ -205,8 +207,7 @@ def main():
 			lossesel.append(ee*te)
 			
 			batch=batch+1
-			if done:
-				break
+
 		joblib.dump(test, maindir+'/test.pkl')
 		#write final losses
 		#MSE for whole window
@@ -278,13 +279,14 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 	index = 0
 	while (True):
 		x, target, done = next(testgen)
+		if done:
+			break
 		if index == 0:
 			allPatients_benign = x.reshape(-1, backcast_length*nv)
 		else:
 			allPatients_benign = np.append(allPatients_benign, x.reshape(-1, backcast_length*nv))
 		index = index + 1
-		if done:
-			break
+
 
 	allPatients_benign = allPatients_benign.reshape(-1, backcast_length*nv)
 	explore_params = [allPatients_benign, backcast_length, nv]
