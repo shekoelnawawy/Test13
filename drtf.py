@@ -63,7 +63,7 @@ outstr='TEST'
 #Do individual subject models
 PERSUBJECT=True
 
-subjects=['540','544','552','567','584','596']
+subjects=['559','563','570','575','588','591']
 
 loopsthrough=1
 if PERSUBJECT:
@@ -706,12 +706,12 @@ def makedata(totallength, sub):
 
 	stored_trains = {}
 	# first load train data
-	for f in os.listdir('2020data'):
+	for f in os.listdir('2018data'):
 		if f.endswith('train.pkl'):
 			if not sub == 99:
 				if not f[:3] == subjects[sub]:
 					continue
-			a = joblib.load('2020data/' + f)
+			a = joblib.load('2018data/' + f)
 			g = np.asarray(a['glucose'])
 			b = np.asarray(a['basal'])
 			d = np.asarray(a['dose'])
@@ -744,12 +744,12 @@ def makedata(totallength, sub):
 			# store to use in test for end
 			stored_trains[f] = x.copy()
 
-	for f in os.listdir('2020data'):
+	for f in os.listdir('2018data'):
 		if f.endswith('test.pkl'):
 			if not sub == 99:
 				if not f[:3] == subjects[sub]:
 					continue
-			a = joblib.load('2020data/' + f)
+			a = joblib.load('2018data/' + f)
 			g = np.asarray(a['glucose'])
 			b = np.asarray(a['basal'])
 			d = np.asarray(a['dose'])
