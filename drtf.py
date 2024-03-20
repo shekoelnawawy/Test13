@@ -269,46 +269,46 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 
 	# Nawawy's start
 	# CALL URET HERE
-	index = 0
-	while (True):
-		x_postprandial, target, done = next(testgen)
-		if done:
-			break
-		x = x_postprandial[:,:,:-1]
-		if index == 0:
-			allPatients_benign = x.reshape(-1, backcast_length * nv)
-			allPatients_postprandial = x_postprandial.reshape((-1, backcast_length * (nv + 1)))
-		else:
-			allPatients_benign = np.append(allPatients_benign, x.reshape(-1, backcast_length * nv))
-			allPatients_postprandial = np.append(allPatients_postprandial, x_postprandial.reshape(-1, backcast_length * (nv + 1)))
-		index = index + 1
-
-	allPatients_benign = allPatients_benign.reshape(-1, backcast_length * nv)
-	allPatients_postprandial = allPatients_postprandial.reshape(-1, backcast_length * (nv + 1))
-
-	explorer = process_config_file(cf, net, feature_extractor=feature_extractor, input_processor_list=[])
-	explorer.scoring_function = mse
-	explore_params = [allPatients_benign, backcast_length, nv]
-	allPatients_adversarial = np.array(explorer.explore(explore_params))
-
-	allPatients_benign = allPatients_benign.reshape(-1, backcast_length, nv)  # 15701, 12, 7
-	allPatients_postprandial = allPatients_postprandial.reshape(-1, backcast_length, nv + 1)  # 15701, 12, 8
-	for i in range(len(allPatients_adversarial)):
-		if allPatients_adversarial[i] is None:
-			allPatients_adversarial[i] = allPatients_benign[i].reshape(1, backcast_length, nv).copy()
-		if i == 0:
-			temp = allPatients_adversarial[i].reshape(1, backcast_length, nv)
-		else:
-			temp = np.append(temp, allPatients_adversarial[i].reshape(1, backcast_length, nv))
-
-	allPatients_adversarial = temp.reshape((1, len(allPatients_adversarial) * backcast_length, nv))
-
-	testgen = ordered_data(batch_size, backcast_length, forecast_length, allPatients_adversarial)
-
-	if backcast_length == 12:
-		allPatients_adversarial = allPatients_adversarial.reshape(-1, backcast_length, nv)  # 15701, 12, 7
-		joblib.dump(allPatients_postprandial, maindir + '/benign_data.pkl')
-		joblib.dump(allPatients_adversarial, maindir + '/adversarial_data.pkl')
+	# index = 0
+	# while (True):
+	# 	x_postprandial, target, done = next(testgen)
+	# 	if done:
+	# 		break
+	# 	x = x_postprandial[:,:,:-1]
+	# 	if index == 0:
+	# 		allPatients_benign = x.reshape(-1, backcast_length * nv)
+	# 		allPatients_postprandial = x_postprandial.reshape((-1, backcast_length * (nv + 1)))
+	# 	else:
+	# 		allPatients_benign = np.append(allPatients_benign, x.reshape(-1, backcast_length * nv))
+	# 		allPatients_postprandial = np.append(allPatients_postprandial, x_postprandial.reshape(-1, backcast_length * (nv + 1)))
+	# 	index = index + 1
+	#
+	# allPatients_benign = allPatients_benign.reshape(-1, backcast_length * nv)
+	# allPatients_postprandial = allPatients_postprandial.reshape(-1, backcast_length * (nv + 1))
+	#
+	# explorer = process_config_file(cf, net, feature_extractor=feature_extractor, input_processor_list=[])
+	# explorer.scoring_function = mse
+	# explore_params = [allPatients_benign, backcast_length, nv]
+	# allPatients_adversarial = np.array(explorer.explore(explore_params))
+	#
+	# allPatients_benign = allPatients_benign.reshape(-1, backcast_length, nv)  # 15701, 12, 7
+	# allPatients_postprandial = allPatients_postprandial.reshape(-1, backcast_length, nv + 1)  # 15701, 12, 8
+	# for i in range(len(allPatients_adversarial)):
+	# 	if allPatients_adversarial[i] is None:
+	# 		allPatients_adversarial[i] = allPatients_benign[i].reshape(1, backcast_length, nv).copy()
+	# 	if i == 0:
+	# 		temp = allPatients_adversarial[i].reshape(1, backcast_length, nv)
+	# 	else:
+	# 		temp = np.append(temp, allPatients_adversarial[i].reshape(1, backcast_length, nv))
+	#
+	# allPatients_adversarial = temp.reshape((1, len(allPatients_adversarial) * backcast_length, nv))
+	#
+	# testgen = ordered_data(batch_size, backcast_length, forecast_length, allPatients_adversarial)
+	#
+	# if backcast_length == 12:
+	# 	allPatients_adversarial = allPatients_adversarial.reshape(-1, backcast_length, nv)  # 15701, 12, 7
+	# 	joblib.dump(allPatients_postprandial, maindir + '/benign_data.pkl')
+	# 	joblib.dump(allPatients_adversarial, maindir + '/adversarial_data.pkl')
 	# Nawawy's end
 
 	eval(net, optimiser, testgen,mydir,  device)
