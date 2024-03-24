@@ -257,9 +257,7 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 
 	batch_size = BATCHSIZE
 	train,val,test=makedata(backcast_length+forecast_length,sub)
-	print('test')
-	joblib.dump(test, 'test.pkl')
-	exit(1)
+
 	traingen = data(batch_size, backcast_length, forecast_length,train)
 	valgen = data(batch_size, backcast_length, forecast_length,val)
 	testgen = ordered_data(batch_size, backcast_length, forecast_length,test)
@@ -417,10 +415,11 @@ def eval(net, optimiser, testgen,mydir,  device):
 		rmselosses=[]
 		preds=[]
 		while(True):
-			x,target,done=next(testgen)
 			# Nawawy's start
+			x_postprandial, target, done = next(testgen)
 			if done:
 				break
+			x = x_postprandial[:, :, :-1]
 			# Nawawy's end
 			totalpoints = totalpoints+x.shape[0]
 			forecast,dummy1,backs,dummy3,dummy4 = net(torch.tensor(x, dtype=torch.float).to(device))
