@@ -721,7 +721,7 @@ def makedata(totallength, sub):
 			gsr = np.asarray(a['gsr'])
 
 			# Nawawy's start
-			post = np.asarray(a['postprandial'])
+			# post = np.asarray(a['postprandial'])
 			# Nawawy's end
 
 			t = np.array(a.index.values)
@@ -731,7 +731,8 @@ def makedata(totallength, sub):
 			miss2 = (np.isnan(fing)).astype(float)
 
 			# Nawawy's start
-			x = np.stack((g, d, c, t1, t2, fing, miss, post), axis=1)
+			# x = np.stack((g, d, c, t1, t2, fing, miss, post), axis=1)
+			x = np.stack((g, d, c, t1, t2, fing, miss), axis=1)
 			# Nawawy's end
 
 			ll = x.shape[0]
@@ -759,7 +760,7 @@ def makedata(totallength, sub):
 			gsr = np.asarray(a['gsr'])
 
 			# Nawawy's start
-			post = np.asarray(a['postprandial'])
+			# post = np.asarray(a['postprandial'])
 			# Nawawy's end
 
 			t = np.array(a.index.values)
@@ -769,7 +770,8 @@ def makedata(totallength, sub):
 			miss = (np.isnan(g)).astype(float)
 
 			# Nawawy's start
-			x = np.stack((g, d, c, t1, t2, fing, miss, post), axis=1)
+			# x = np.stack((g, d, c, t1, t2, fing, miss, post), axis=1)
+			x = np.stack((g, d, c, t1, t2, fing, miss), axis=1)
 			# Nawawy's end
 
 			# add in last training points so that we are predicting all points after
