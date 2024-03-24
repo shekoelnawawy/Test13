@@ -258,8 +258,9 @@ def train_and_evaluate(curmodel,maindir,forecast_length,backcast_length,sub,base
 	batch_size = BATCHSIZE
 	train,val,test=makedata(backcast_length+forecast_length,sub)
 	print('test')
-	print(test)
+	# print(test[:,-1])
 	print(len(test))
+	joblib.dump(test, 'test.pkl')
 	exit(1)
 	traingen = data(batch_size, backcast_length, forecast_length,train)
 	valgen = data(batch_size, backcast_length, forecast_length,val)
